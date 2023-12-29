@@ -3,12 +3,12 @@ name: "Prod Infra Build"
 
 on:
 
- workflow_dispatch:
-    workflows: ["PROD IMAGE BUILD"]
-    types:
-      - [completed]
+  workflow_run:
+     workflows: [ "PROD IMAGE BUILD" ]
+     types: [ completed ]
 
-    inputs:
+  workflow_dispatch:
+     inputs:
 
       instance_type:
         type: choice
