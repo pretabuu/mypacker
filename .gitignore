@@ -1,1 +1,4 @@
 sshkey
+1
+.terraform
+.terraform.lock.hcl

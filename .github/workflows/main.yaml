@@ -3,17 +3,17 @@ name: "Prod Infra Build"
 
 on:
 
- workflow_dispatch:
-    workflows: ["PROD IMAGE BUILD"]
-    types:
-      - [completed]
+  workflow_run:
+     workflows: [ "PROD IMAGE BUILD" ]
+     types: [ completed ]
 
-    inputs:
+  workflow_dispatch:
+     inputs:
 
       instance_type:
         type: choice
         description: "Instance Type"
-        options: 
+        options:
         - t2.micro
         - t2.small
         default: "t2.micro"
@@ -24,9 +24,9 @@ on:
         required: true
         default: "ami-02e94b011299ef128"
 
-    
+
 jobs:
-    
+
   build:
     runs-on: ubuntu-latest
 
@@ -40,7 +40,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6.2
-     
+
       - name: Terraform init
         run: |
            terraform init \
@@ -49,18 +49,18 @@ jobs:
                -backend-config="region=ap-south-1" \
                -backend-config="access_key=${{ secrets.PROD_ACCESS_KEY }}" \
                -backend-config="secret_key=${{ secrets.PROD_SECRET_KEY }}" \
-  
-            
-            
+
+
+
       - name: Terraform fmt
         run: terraform fmt
 
-        
-          
+
+
       - name: Terraform validate
         run: terraform validate
 
-        
+
 
       - name: Terraform plan
         run: |
@@ -72,8 +72,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_SECRET_KEY }}
           AWS_REGION: "ap-south-1"
 
-        
-        
+
+
       - name: Terraform apply
         run: |
            terraform apply \
