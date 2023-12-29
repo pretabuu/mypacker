@@ -1,11 +1,29 @@
 ---
-name: "Dev Infra Build"
+name: "Prod Infra Build"
 
 on:
-  workflow_run:
-    workflows: ["Packer Image"]
+
+ workflow_dispatch:
+    workflows: ["PROD IMAGE BUILD"]
     types:
-      - completed
+      - [completed]
+
+    inputs:
+
+      instance_type:
+        type: choice
+        description: "Instance Type"
+        options: 
+        - t2.micro
+        - t2.small
+        default: "t2.micro"
+
+      instance_ami:
+        type: string
+        description: "Instance AMI"
+        required: true
+        default: "ami-02e94b011299ef128"
+
     
 jobs:
     
@@ -45,7 +63,10 @@ jobs:
         
 
       - name: Terraform plan
-        run: terraform plan -var-file=prod.tfvars
+        run: |
+           terraform plan \
+             -var "instance_type=${{ github.event.inputs.instance_type }}" \
+             -var "instance_ami=${{ github.event.inputs.instance_ami }}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_SECRET_KEY }}
@@ -56,8 +77,9 @@ jobs:
       - name: Terraform apply
         run: |
            terraform apply \
-              -auto-approve \
-              -var-file=prod.tfvars
+             -var "instance_type=${{ github.event.inputs.instance_type }}" \
+             -var "instance_ami=${{ github.event.inputs.instance_ami }}" \
+             -auto-approve
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_SECRET_KEY }}
