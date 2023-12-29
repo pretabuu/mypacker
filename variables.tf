@@ -4,4 +4,4 @@ variable "project_env" {}
 variable "hosted_zone_name" {}
 variable "hostname" {}
 variable "hosted_zone_id" {}
-varialbe "instance_ami" {}
+variable "instance_ami" {}
