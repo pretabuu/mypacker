@@ -2,8 +2,22 @@ name: "PROD IMAGE BUILD"
 
 on:
   push:
+
     branches:
+
       - prod
+  
+  workflow_dispatch:
+
+    inputs:
+
+      instance_region:
+        type: choice
+        description: "instance region"
+        options: 
+        - ap-south-1
+        - us-east-2
+        default: "ap-south-1"
 
 jobs:
   build:
@@ -29,7 +43,7 @@ jobs:
         working-directory: ./packer/
 
       - name: "Run packer validate"
-        run: packer validate -var-file="prod.pkvars.hcl" .
+        run: packer validate -var "instance_region=${{ github.event.inputs.instance_region }}" -var-file="prod.pkvars.hcl" .
         working-directory: ./packer/
 
       - name: "Run packer template"
@@ -37,5 +51,5 @@ jobs:
         working-directory: ./packer/
 
       - name: "Build Artifact"
-        run: packer build -var-file="prod.pkvars.hcl" .
+        run: packer build  -var "instance_region=${{ github.event.inputs.instance_region }}" -var-file="prod.pkvars.hcl" .
         working-directory: ./packer/
