@@ -11,7 +11,7 @@ packer {
 source "amazon-ebs" "website" {
     ami_name      = local.image-name
     source_ami    = var.ami
-  #  region        = var.region
+    region        = "ap-south-1"
     instance_type = "t2.micro"
     ssh_username  = "ec2-user"
     tags = {
