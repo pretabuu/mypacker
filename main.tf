@@ -101,7 +101,7 @@ resource "aws_instance" "webserver" {
 #------------------------------------------
 
 resource "aws_route53_record" "terraform" {
-  zone_id = var.hosted_zone_id
+  zone_id = "Z032596239JGSA4T7CJU"
   name    = "${var.hostname}.${var.hosted_zone_name}"
   type    = "A"
   ttl     = 300
