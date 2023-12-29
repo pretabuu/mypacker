@@ -25,7 +25,7 @@ build {
   sources = ["source.amazon-ebs.website"]
   
   provisioner "file" {
-    source      = "./website"
+    source      = "../website"
     destination = "/tmp/"
   }
   

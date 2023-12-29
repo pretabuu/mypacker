@@ -1,4 +1,4 @@
-name: "Packer Image"
+name: "PROD IMAGE BUILD"
 
 on:
   push:
@@ -6,16 +6,13 @@ on:
       - prod
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.PROD_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_SECRET_KEY }}
       AWS_ACCESS_REGION: ${{ secrets.PROD_ACCESS_REGION }}
       packer_version: "1.9.4"
-
 
     steps:
 
@@ -29,12 +26,23 @@ jobs:
 
       - name: "Run packer init"
         run: packer init .
+        working-directory: ./packer/
 
       - name: "Run packer validate"
         run: packer validate -var-file="prod.pkvars.hcl" .
+        working-directory: ./packer/
 
       - name: "Run packer template"
         run: packer fmt .
+        working-directory: ./packer/
 
       - name: "Build Artifact"
         run: packer build -var-file="prod.pkvars.hcl" .
+        working-directory: ./packer/
+
+       - name: "Notify Dev Deploy Job"
+         uses: peter-evans/repository-dispatch@v2
+         with:
+           token: ${{ secrets.INFRA_PAT }}
+           repository: pretabuu/myshop-web-infra
+           event-type: deploy-infra

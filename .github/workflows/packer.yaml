@@ -1,15 +1,13 @@
 ---
-name: "Packer Image"
+name: "PROD IMAGE BUILD"
 
 on:
   push:
     branches:
       - prod
-    
-jobs:
-    
-  build:
 
+jobs:
+  build:
     runs-on: ubuntu-latest
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.PROD_ACCESS_KEY }}
@@ -19,26 +17,22 @@ jobs:
 
     steps:
 
-      - name: "Repository Checkout"
+      - name: "repository checkout"
         uses: actions/checkout@v3
 
-      - name: "Packer Installation"
+      - name: "packer installation"
         uses: hashicorp/setup-packer@main
         with:
           version: ${{ env.packer_version }}
 
-      - name: "Packer Init"
-        run: packer init  .
-        
-      - name: "Packer Validate"
-        run: packer validate  -var-file="prod.pkrvars.hcl" .
-        
-      - name: "Format Packer Template"
+      - name: "Run packer init"
+        run: packer init .
+
+      - name: "Run packer validate"
+        run: packer validate -var-file="prod.pkvars.hcl" .
+
+      - name: "Run packer template"
         run: packer fmt .
-        
-      - name: "Packer build Image"
-        run: packer build  -var-file="prod.pkrvars.hcl" .
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.PROD_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_SECRET_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.PROD_ACCESS_REGION }}
+
+      - name: "Build Artifact"
+        run: packer build -var-file="prod.pkvars.hcl" .
