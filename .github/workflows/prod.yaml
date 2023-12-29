@@ -39,10 +39,3 @@ jobs:
       - name: "Build Artifact"
         run: packer build -var-file="prod.pkvars.hcl" .
         working-directory: ./packer/
-
-       - name: "Notify Dev Deploy Job"
-         uses: peter-evans/repository-dispatch@v2
-         with:
-           token: ${{ secrets.INFRA_PAT }}
-           repository: pretabuu/myshop-web-infra
-           event-type: deploy-infra
