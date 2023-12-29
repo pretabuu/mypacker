@@ -35,3 +35,5 @@ jobs:
 
       - name: "Build Artifact"
         run: packer build -var-file="prod.pkvars.hcl" .
+        env:
+          AWS_ACCESS_REGION: ${{ secrets.PROD_ACCESS_REGION }}
